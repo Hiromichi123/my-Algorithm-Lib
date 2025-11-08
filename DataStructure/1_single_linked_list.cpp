@@ -19,15 +19,22 @@ class list{
 public:
     NODE* head; // 头节点
 
+    // 由数组构造链表，0表示结束
     list(int* array0) {
         head = new NODE(0, nullptr);
         NODE* current = head;
 
-        for(; array0 != nullptr; array0++) {
+        for(; *array0 != 0; array0++) {
             NODE* node = new NODE(*array0, nullptr);
             current->next = node;
             current = node;
         }
+        current->next = nullptr; // 末尾
+    }
+
+    // 直接又传入头节点的构造
+    list(NODE* first) {
+        head = new NODE(0, first);
     }
 
     void print() {
@@ -46,36 +53,56 @@ public:
     }
 
     NODE* get_middle();
-    void flip();
-    void reshape();
+    NODE* flip(NODE* start);
+    void reorder();
 };
 
-// 获取中间元素
+// 获取中间元素(偶数取上中位)
 NODE* list::get_middle() {
     if(!head || !head->next) return nullptr;
     NODE *fast = head->next, *slow = head->next;
-    for(; fast != nullptr && fast->next != nullptr; fast = fast->next->next, slow = slow->next);
+    for(; fast->next && fast->next->next; fast = fast->next->next, slow = slow->next);
     return slow;
 }
 
 // 翻转元素
-void list::flip() {
-
+NODE* list::flip(NODE* start) {
+    if(!start) return nullptr;
+    NODE *front = nullptr, *cur = start, *pre; // pre本质上是一个temp
+    for(; cur != nullptr; front = cur,
+                        cur = pre) {
+                            pre = cur->next;
+                            cur->next = front;
+                        }
+    start->next = nullptr; // 翻转后的尾节点指向空
+    return front;
 }
 
 // 重对齐
-void list::reshape() {
+void list::reorder() {
+    if (!head || !head->next) return;
+    NODE* mid = get_middle();
+    NODE* flipped = flip(mid->next); // 翻转后半部分
+    mid->next = nullptr; // 切断前后部分
 
+    NODE *first = head->next, *second = flipped, *temp1, *temp2;
+    for(; second; first = temp1,
+                second = temp2) { // 交叉合并
+        temp1 = first->next;
+        temp2 = second->next;
+
+        first->next = second;
+        second->next = temp1;
+    }
 }
 
 int main() {
-    int array[] = {1, 2, 3, 4, 5, 6, 7, 8};
+    int array[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0};
     list l(array);
-    l.print();
-    NODE* mid = l.get_middle(); //获取中间元素
-    std::cout<<mid->data<<std::endl;
-    //翻折
-    //重对齐
 
+    //重对齐
+    l.reorder();
+    l.print();
+    
     return 0;
 }
