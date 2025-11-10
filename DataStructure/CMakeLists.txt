@@ -15,6 +15,7 @@ find_package(ament_cmake REQUIRED)
 
 # 可执行文件编译
 add_executable(node1 1_single_linked_list.cpp)
+add_executable(node2 2_stack_queue.cpp)
 
 # 可执行文件编译依赖
 ament_target_dependencies(node1)
@@ -22,5 +23,6 @@ set(CMAKE_INSTALL_RPATH /usr/local/lib)
 
 # 可执行文件安装
 install(TARGETS node1 DESTINATION lib/${PROJECT_NAME})
+install(TARGETS node2 DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
