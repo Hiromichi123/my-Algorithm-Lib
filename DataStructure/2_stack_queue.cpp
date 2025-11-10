@@ -9,23 +9,23 @@ public:
 
     Stack() : top(-1) {}
     bool isEmpty();
-    bool push(int x);
-    bool pop();
+    Stack& push(int x);
+    Stack& pop();
     int peek();
 };
 
 bool Stack::isEmpty() { return top == -1; }
 
-bool Stack::push(int x) {
-    if(top >= MAX - 1) return false; // 栈满
+Stack& Stack::push(int x) {
+    if(top >= MAX - 1) std::cerr << "Stack is full" << std::endl; // 栈满
     arr[++top] = x;
-    return true;
+    return *this;
 }
 
-bool Stack::pop() {
-    if(isEmpty()) return false; // 栈空
+Stack& Stack::pop() {
+    if(isEmpty()) std::cerr << "Stack is empty" << std::endl; // 栈空
     top--;
-    return true;
+    return *this;
 }
 
 int Stack::peek() {
@@ -41,15 +41,15 @@ public:
 
     Queue() : front(0), rear(0) {}
     bool isEmpty();
-    bool enqueue(int x);
-    bool dequeue();
+    Queue& enqueue(int x);
+    Queue& dequeue();
     int getHead();
 };
 
 bool Queue::isEmpty() { return front == rear; }
 
 // 非循环队列
-bool Queue::enqueue(int x) {
+Queue& Queue::enqueue(int x) {
     if(rear >= MAX) {
         if(front > 0) { // 前面还有空位
             for(int i=front; i<rear; i++) {
@@ -59,18 +59,18 @@ bool Queue::enqueue(int x) {
             front = 0; // front前移到头
         }
         else {
-            return false; // 队列真满
+            std::cerr << "Queue is full" << std::endl; // 队列真满
         }
     }
     arr[rear] = x;
     rear++;
-    return true;
+    return *this;
 }
 
-bool Queue::dequeue() {
-    if(isEmpty()) return false;
+Queue& Queue::dequeue() {
+    if(isEmpty()) throw std::out_of_range("Queue is empty");
     front++; // 后移
-    return true;
+    return *this;
 }
 
 int Queue::getHead() {
@@ -80,17 +80,13 @@ int Queue::getHead() {
 
 int main() {
     Stack s;
-    s.push(10);
-    s.push(20);
-    s.push(30);
+    s.push(10).push(20).push(30);
     std::cout << "Top element is: " << s.peek() << std::endl; // 输出30
     s.pop();
     std::cout << "Top element is: " << s.peek() << std::endl; // 输出20
 
     Queue q;
-    q.enqueue(10);
-    q.enqueue(20);
-    q.enqueue(30);
+    q.enqueue(10).enqueue(20).enqueue(30);
     std::cout << "Front element is: " << q.getHead() << std::endl; // 输出10
     q.dequeue();
     std::cout << "Front element is: " << q.getHead() << std::endl; // 输出20
