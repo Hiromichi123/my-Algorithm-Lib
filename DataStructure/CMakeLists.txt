@@ -16,13 +16,17 @@ find_package(ament_cmake REQUIRED)
 # 可执行文件编译
 add_executable(node1 1_single_linked_list.cpp)
 add_executable(node2 2_stack_queue.cpp)
+target_compile_definitions(node2 PRIVATE STACK_QUEUE_TEST)
+add_executable(node3 3_postfix_exp.cpp)
+target_compile_definitions(node3 PRIVATE POSTFIX_EXP_TEST)
 
 # 可执行文件编译依赖
 ament_target_dependencies(node1)
+ament_target_dependencies(node2)
+ament_target_dependencies(node3)
 set(CMAKE_INSTALL_RPATH /usr/local/lib)
 
 # 可执行文件安装
-install(TARGETS node1 DESTINATION lib/${PROJECT_NAME})
-install(TARGETS node2 DESTINATION lib/${PROJECT_NAME})
+install(TARGETS node1 node2 node3 DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

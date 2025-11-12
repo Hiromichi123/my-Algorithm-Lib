@@ -1,3 +1,6 @@
+// 栈与队列
+#ifndef STACK_QUEUE_CPP
+#define STACK_QUEUE_CPP
 #include<iostream>
 
 #define MAX 100
@@ -78,6 +81,7 @@ int Queue::getHead() {
     return arr[front];
 }
 
+#ifdef STACK_QUEUE_TEST
 int main() {
     Stack s;
     s.push(10).push(20).push(30);
@@ -93,3 +97,6 @@ int main() {
 
     return 0;
 }
+#endif // STACK_QUEUE_TEST
+
+#endif // STACK_QUEUE_CPP
