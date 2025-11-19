@@ -20,15 +20,16 @@ target_compile_definitions(node2 PRIVATE STACK_QUEUE_TEST)
 add_executable(node3 3_postfix_exp.cpp)
 target_compile_definitions(node3 PRIVATE POSTFIX_EXP_TEST)
 add_executable(node4 4_binary_tree.cpp)
+add_executable(node5 5_graph_dsf_bsf.cpp)
 
 # 可执行文件编译依赖
 ament_target_dependencies(node1)
 ament_target_dependencies(node2)
 ament_target_dependencies(node3)
 ament_target_dependencies(node4)
+ament_target_dependencies(node5)
 set(CMAKE_INSTALL_RPATH /usr/local/lib)
 
 # 可执行文件安装
-install(TARGETS node1 node2 node3 node4 DESTINATION lib/${PROJECT_NAME})
-
+install(TARGETS node1 node2 node3 node4 node5 DESTINATION lib/${PROJECT_NAME})
 ament_package()

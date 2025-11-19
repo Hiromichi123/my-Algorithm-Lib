@@ -10,7 +10,19 @@ typedef struct TreeNode {
     TreeNode(ElemType val) : data(val), lchild(nullptr), rchild(nullptr) {};
 }TreeNode;
 
+// 未做实现
+typedef struct ThreadNode {
+    ElemType data;
+    ThreadNode *lchild;
+    ThreadNode *rchild;
+    int ltag; // 0孩子，1前驱
+    int rtag; // 0孩子，1后继
+
+    ThreadNode(ElemType val) : data(val), lchild(nullptr), rchild(nullptr), ltag(0), rtag(0) {};
+}ThreadNode;
+
 typedef TreeNode* BiTree;
+typedef ThreadNode* ThreadTree;
 
 char str[] = "ABDH#K###E##CFI###G#J##";
 int index = 0;
@@ -54,6 +66,35 @@ void PostOrder(BiTree T) {
     std::cout << T->data;
 }
 
+// 层序遍历：递归法
+int maxDepth(BiTree T) {
+    if (T == nullptr) return 0;
+    int lDepth = maxDepth(T->lchild);
+    int rDepth = maxDepth(T->rchild);
+    return (lDepth > rDepth ? lDepth : rDepth) + 1; // 左右子树深度最大值+1
+}
+
+// 层序遍历：队列法
+#include<queue>
+int levelOrder(BiTree T) {
+    if (T == nullptr) return 0;
+    std::queue<BiTree> Q;
+    Q.push(T); // 放入根节点
+
+    int depth = 0;
+    while(!Q.empty()) {
+        int size = Q.size();
+        for (int i = 0; i < size; i++) {
+            BiTree node = Q.front();
+            Q.pop();
+            if (node->lchild) Q.push(node->lchild);
+            if (node->rchild) Q.push(node->rchild);
+        }
+        depth++;
+    }
+    return depth;
+}
+
 int main() {
     BiTree T = nullptr; 
     CreateBiTree(&T);
@@ -70,5 +111,7 @@ int main() {
     PostOrder(T);
     std::cout << std::endl;
 
+    std::cout << "层序遍历递归: " << maxDepth(T) << std::endl;
+    std::cout << "层序遍历队列：" << levelOrder(T) << std::endl;
     return 0;
 }
