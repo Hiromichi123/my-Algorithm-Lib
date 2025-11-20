@@ -89,11 +89,73 @@ public:
         }
         return std::move(*this);
     }
+
+    // 克鲁斯卡尔算法，最小生成树
+    MatrixGraph&& Kruskal() && {
+        struct Edge {
+            int start;
+            int end;
+            int weight;
+        } edges[MAXSIZE * MAXSIZE];
+
+        // 提取所有边（只收集 i<j 的无向边），并统计实际边数
+        int m = 0; // 实际边数
+        for(int i = 0; i < vertex_num; i++) {
+            for(int j = i + 1; j < vertex_num; j++) {
+                if(arc[i][j] != MAX) {
+                    edges[m].start = i;
+                    edges[m].end = j;
+                    edges[m].weight = arc[i][j];
+                    m++;
+                }
+            }
+        }
+
+        // 按权值排序边（使用简单冒泡排序，范围为 m）
+        for(int i = 0; i < m - 1; i++) {
+            for(int j = 0; j < m - i - 1; j++) {
+                if(edges[j].weight > edges[j + 1].weight) {
+                    Edge temp = edges[j];
+                    edges[j] = edges[j + 1];
+                    edges[j + 1] = temp;
+                }
+            }
+        }
+
+        // 初始化parent数组，用于查找根节点（并查集，初始为自身）
+        int parent[MAXSIZE];
+        for(int i = 0; i < vertex_num; i++) parent[i] = i;
+
+        int edge_count = 0; // 已加入生成树的边数
+        for(int i = 0; i < m && edge_count < vertex_num - 1; i++) {
+            int start_parent = edges[i].start;
+            int end_parent = edges[i].end;
+
+            // 查找起点的根节点
+            while(parent[start_parent] != start_parent) {
+                start_parent = parent[start_parent];
+            }
+
+            // 查找终点的根节点
+            while(parent[end_parent] != end_parent) {
+                end_parent = parent[end_parent];
+            }
+
+            // 若不构成环路，则加入生成树
+            if(start_parent != end_parent) {
+                std::cout << vertex[edges[i].start] << "->" << vertex[edges[i].end] << std::endl;
+                parent[start_parent] = end_parent; // 合并集合（将 start 的根指向 end 的根）
+                edge_count++;
+            }
+        }
+
+        return std::move(*this);
+    }
 };
 
 int main() {
     #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
-    MatrixGraph G = MatrixGraph(8, 15)
+    MatrixGraph G = MatrixGraph(9, 15)
         .add_edge("A->B", 10).add_edge("A->F", 11)
         .add_edge("B->C", 18).add_edge("B->G", 16).add_edge("B->I", 12)
         .add_edge("C->D", 22).add_edge("C->I", 8)
@@ -101,7 +163,8 @@ int main() {
         .add_edge("E->F", 26).add_edge("E->H", 7)
         .add_edge("F->G", 17)
         .add_edge("G->H", 19)
-        .Prim();
+        .Prim().reset_visited()
+        .Kruskal().reset_visited();
 
         return 0;
 }

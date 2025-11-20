@@ -119,7 +119,7 @@ public:
 
 int main() {
     // 具名对象，左值
-    MatrixGraph G1(8, 15);
+    MatrixGraph G1(9, 15);
     G1.add_edge("A->B").add_edge("A->F")
         .add_edge("B->C").add_edge("B->G").add_edge("B->I")
         .add_edge("C->D").add_edge("C->I")

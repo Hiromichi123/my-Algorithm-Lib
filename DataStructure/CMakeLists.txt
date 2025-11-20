@@ -21,7 +21,7 @@ add_executable(node3 3_postfix_exp.cpp)
 target_compile_definitions(node3 PRIVATE POSTFIX_EXP_TEST)
 add_executable(node4 4_binary_tree.cpp)
 add_executable(node5 5_graph_dsf_bsf.cpp)
-add_executable(node6 6_graph_prim.cpp)
+add_executable(node6 6_graph_prim_kruskal.cpp)
 
 # 可执行文件编译依赖
 ament_target_dependencies(node1)
