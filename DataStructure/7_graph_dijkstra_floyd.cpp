@@ -104,6 +104,55 @@ public:
 
         return std::move(*this);
     }
+
+    //Floyd最短路径
+    MatrixGraph&& Floyd() && {
+        int dist[MAXSIZE][MAXSIZE];
+        int path[MAXSIZE][MAXSIZE];
+
+        // 初始化dist和path矩阵
+        for(int i = 0; i < vertex_num; i++) {
+            for(int j = 0; j < vertex_num; j++) {
+                dist[i][j] = arc[i][j];
+                if(i != j && arc[i][j] < MAX)
+                    path[i][j] = i;
+                else
+                    path[i][j] = -1;
+            }
+        }
+
+        // i中转顶点，j起始顶点，k终止顶点
+        for(int i = 0; i < vertex_num; i++) {
+            for(int j = 0; j < vertex_num; j++) {
+                for(int k = 0; k < vertex_num; k++) {
+                    if(dist[j][i] + dist[i][k] < dist[j][k]) {
+                        dist[j][k] = dist[j][i] + dist[i][k];
+                        path[j][k] = path[i][k];
+                    }
+                }
+            }
+        }
+
+        // 输出结果
+        for(int i = 0; i < vertex_num; i++) {
+            for(int j = 0; j < vertex_num; j++) {
+                if(i != j) {
+                    std::cout << vertex[i] << " -> " << vertex[j] << " = " << dist[i][j] << std::endl;
+                    int curr = j;
+                    std::cout << vertex[j];
+                    while(path[i][curr] != -1) {
+                        std::cout << " <- " << vertex[path[i][curr]];
+                        curr = path[i][curr];
+                    }
+                    if(curr != i && dist[i][j] != 0) {
+                        std::cout << " <- " << vertex[i];
+                    }
+                    std::cout << std::endl;
+                }
+            }
+        }
+        return std::move(*this);
+    }
 };
 
 int main() {
@@ -116,7 +165,8 @@ int main() {
         .add_edge("E->F", 26).add_edge("E->H", 7)
         .add_edge("F->G", 17)
         .add_edge("G->H", 19)
-        .Dijkstra(0).reset_visited();
+        .Dijkstra(0).reset_visited()
+        .Floyd().reset_visited();
 
         return 0;
 }
