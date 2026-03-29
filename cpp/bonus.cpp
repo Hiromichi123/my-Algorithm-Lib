@@ -51,7 +51,3 @@ void exampleDecltype(){
     decltype(x);   // x的声明类型为int
     decltype((x)); // x的表达式类型为int&
 }
-
-template<auto N> // n可以是任意非类型模板参数，int、enum、（函数）指针、lambda
-struct Vec { };
-Vec<[]()[]>

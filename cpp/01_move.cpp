@@ -41,7 +41,7 @@ public:
         other.data = nullptr;   // 让源对象放弃资源所有权
         other.len = 0;
     }
-    
+
     // 移动赋值运算符
     MyString& operator=(MyString&& other) noexcept {
         if (this != &other) {
