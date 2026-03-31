@@ -21,24 +21,40 @@ constexpr size_t res = Accumulate<1, 2, 3, 4, 5>;
 // C++17提供fold expression，简化了递归实现的循环
 template <size_t... values>
 constexpr size_t fun() {
-    return (... + values);
+    return (0 + ... + values);
 }
 
 constexpr size_t res = fun<1, 2, 3, 4, 5>();
 
 
 // 引入短路逻辑，减少编译期实例化
+// 奇数判断
 template <size_t N>
 constexpr bool is_odd = ((N % 2) == 1);
 
 template <size_t N>
 struct AllOdd_ {
-    constexpr static bool is_cur_odd = is_odd<N>;
-    constexpr static bool is_pre_odd = AllOdd_<N - 1>::value;
-    constexpr static bool value = is_cur_odd && is_pre_odd;
+    constexpr static bool is_cur_odd = is_odd<N>; // 当前数是否为奇数
+    constexpr static bool is_pre_odd = AllOdd_<N - 1>::value; // 前驱是否都为奇数
+    constexpr static bool value = is_cur_odd && is_pre_odd; // 当前数和前驱都为奇数才为真
 };
 
 template <>
 struct AllOdd_<0> {
     constexpr static bool value = is_odd<0>;
+};
+// 问题：模板实例化发生在语义分析阶段，编译器会全部展开，不会逻辑短路
+
+// 改进版本，用模板特化模拟if
+template <bool cur, typename TNext>
+constexpr static bool AndValue = false;
+
+template <typename TNext>
+constexpr static bool AndValue<true, TNext> = TNext::value;
+
+template <size_t N>
+struct AllOdd {
+    constexpr static bool is_cur_odd = is_odd<N>;
+    constexpr static bool value = AndValue<is_cur_odd, // 当前数被要求去匹配布尔值，所以编译期器会先计算
+                                            AllOdd<N - 1>>;
 };
